@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:p="https://www.registoclinico.pt/paciente"
+  xmlns:m="https://www.registoclinico.pt/profissional"
+  xmlns:h="https://www.registoclinico.pt/hospital">
+  
+  <xs:import schemaLocation="profissionalTipo.xsd" namespace="https://www.registoclinico.pt/profissional"/>  
+  <xs:import schemaLocation="pacienteTipo.xsd" namespace="https://www.registoclinico.pt/paciente"/>  
+  <xs:import schemaLocation="hospitalTipo.xsd" namespace="https://www.registoclinico.pt/hospital"/>
+  
+  
+  
+  <xs:element name="Transferencias">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Transferencia" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              
+              <xs:element name="infoGeralHospital">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="codHospDest" type="h:codHospTipo"/> 
+                    <xs:element name="nomeHospDest" type="xs:string"/>
+                    <xs:element name="moradaHospDest" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              
+              <xs:element name="registoTransferencia">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="CodigoPaciente" type="p:codPacienteType"/>
+                    <xs:element name="DataTransferencia" type="xs:date"/>
+                    <xs:element name="motivoTransferencia" type="xs:string"/>
+                    <xs:element name="tipoTransferencia" type="tipoTransferenciaTipo"/>
+                    
+                    <xs:element name="RelatorioMedico">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="idMedico" type="m:idProfissionalTipo"/>
+                          <xs:element name="diagnosticosPrevios" type="xs:string" maxOccurs="unbounded"/>
+                          <xs:element name="tratamentosPrevios" type="xs:string" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Motivo" type="xs:string"/>
+              <xs:element name="RelatorioMedico" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  
+  <xs:simpleType name="tipoTransferenciaTipo">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Urgente"/>
+      <xs:enumeration value="Eletiva"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  
+</xs:schema>

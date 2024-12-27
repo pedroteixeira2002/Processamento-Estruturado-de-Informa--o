@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:p="https://www.registoclinico.pt/paciente">
+  
+  <xs:import schemaLocation="pacienteTipo.xsd" namespace="https://www.registoclinico.pt/paciente"/>
+  
+  
+  
+  <xs:element name="RegistosClinicos">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="RegistoClinico" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CodigoAtendimento" type="identificationTipo"/>
+              <xs:element name="idPaciente" type="p:idPacienteTipo"/>
+              <xs:element name="idProfissional" type="identificationTipo"/>
+              <xs:element name="dataAtendimento" type="xs:date"/>
+              <xs:element name="Diagnosticos" type="diagonosticoTipo"/>
+              <xs:element name="descDiagonostico" type="descDiagonosticoTipo"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:simpleType name="identificationTipo">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="50000"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="diagonosticoTipo">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DiagnosticoPrincipal"/>
+      <xs:enumeration value="DiagnosticoSecundario"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="descDiagonosticoTipo">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  
+  
+</xs:schema>
