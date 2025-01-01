@@ -4,9 +4,9 @@
   xmlns:m="https://www.registoclinico.pt/profissional"
   xmlns:h="https://www.registoclinico.pt/hospital">
   
-  <xs:import schemaLocation="profissionalTipo.xsd" namespace="https://www.registoclinico.pt/profissional"/>  
-  <xs:import schemaLocation="pacienteTipo.xsd" namespace="https://www.registoclinico.pt/paciente"/>  
-  <xs:import schemaLocation="hospitalTipo.xsd" namespace="https://www.registoclinico.pt/hospital"/>
+  <xs:import schemaLocation="profissional_type.xsd" namespace="https://www.registoclinico.pt/profissional"/>  
+  <xs:import schemaLocation="pacient_type.xsd" namespace="https://www.registoclinico.pt/paciente"/>  
+  <xs:import schemaLocation="hospital_type.xsd" namespace="https://www.registoclinico.pt/hospital"/>
   
   
   

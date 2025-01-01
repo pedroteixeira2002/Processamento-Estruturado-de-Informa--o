@@ -2,9 +2,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:p="https://www.registoclinico.pt/paciente">
   
-  <xs:import schemaLocation="pacienteTipo.xsd" namespace="https://www.registoclinico.pt/paciente"/>
-  
-  
+  <xs:import schemaLocation="pacient_type.xsd" namespace="https://www.registoclinico.pt/paciente"/>
   
   <xs:element name="RegistosClinicos">
     <xs:complexType>
@@ -13,7 +11,7 @@
           <xs:complexType>
             <xs:sequence>
               <xs:element name="CodigoAtendimento" type="identificationTipo"/>
-              <xs:element name="idPaciente" type="p:idPacienteTipo"/>
+              <xs:element name="idPaciente" type="p:codPacienteType"/>
               <xs:element name="idProfissional" type="identificationTipo"/>
               <xs:element name="dataAtendimento" type="xs:date"/>
               <xs:element name="Diagnosticos" type="diagonosticoTipo"/>

@@ -1,0 +1,37 @@
+[
+  {
+    $lookup: {
+      from: "clinical_record",
+      localField: "ID_Paciente",
+      foreignField: "ID_Paciente",
+      as: "registos_clinicos"
+    }
+  },
+  {
+    $unwind: {
+      path: "$registos_clinicos",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+  {
+    $match: {
+      "registos_clinicos.Data_Atendimento": {
+        $gte: new Date("2023-06-17T00:00:00Z"),
+        $lt: new Date("2024-06-17T00:00:00Z")
+      }
+    }
+  },
+  {
+    $project: {
+      Nome_Completo: 1,
+      Género: 1,
+      Data_Nascimento: 1,
+      "registos_clinicos.Data_Atendimento": 1,
+      "registos_clinicos.Tipo_Diagnostico": 1,
+      "registos_clinicos.Descricao_Diagnostico": 1
+    }
+  },
+  {
+    $limit: 100
+  }
+]

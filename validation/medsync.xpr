@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <meta>
+        <filters directoryPatterns="" filePatterns="" positiveFilePatterns="" showHiddenFiles="false"/>
+        <options/>
+    </meta>
+    <projectTree name="medsync.xpr">
+        <file name="clinical_record.xsd"/>
+        <file name="hospital_type.xsd"/>
+        <file name="pacient_type.xsd"/>
+        <file name="profissional_type.xsd"/>
+        <file name="transfers.xsd"/>
+    </projectTree>
+</project>
