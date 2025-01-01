@@ -1,0 +1,66 @@
+[
+  {
+    $group: {
+      _id: "$ID_Atendimento",
+      Diagnosticos: {
+        $push: {
+          Tipo_Diagnostico: "$Tipo_Diagnostico",
+          Codigo_CID10: "$Codigo_CID10",
+          Descricao_Diagnostico:
+            "$Descricao_Diagnostico"
+        }
+      },
+      ID_Paciente: {
+        $first: "$ID_Paciente"
+      },
+      ID_Profissional: {
+        $first: "$ID_Profissional"
+      },
+      Data_Atendimento: {
+        $first: "$Data_Atendimento"
+      }
+    }
+  },
+  {
+    $lookup: {
+      from: "treatment",
+      localField: "_id",
+      foreignField: "ID_Registro_Clinico",
+      as: "Tratamentos"
+    }
+  },
+  {
+    $lookup: {
+      from: "treatment_update",
+      localField: "_id",
+      foreignField: "ID_Registro_Clinico",
+      as: "TratamentosAtualizados"
+    }
+  },
+  {
+    $addFields: {
+      Tratamentos: {
+        $concatArrays: [
+          "$Tratamentos",
+          "$TratamentosAtualizados"
+        ]
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      ID_Registo_Clinico: "$_id",
+      ID_Paciente: 1,
+      ID_Profissional: 1,
+      Data_Atendimento: 1,
+      Registos: {
+        Diagnostico: "$Diagnosticos",
+        Tratamento: "$Tratamentos"
+      }
+    }
+  },
+  {
+    $out: "consolidated_records"
+  }
+]
