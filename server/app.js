@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 const express = require('express');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const clinicalRoutes = require('./routes/ClinicalRecordRoute');
@@ -26,11 +25,5 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ success: false, error: err.message });
 });
-
-
-mongoose.connect('mongodb+srv://pedro:pedro@medsync.vziha.mongodb.net/')
-    .then(() => console.log('Mongo conectado'))
-    .catch((err) => console.error('Erro ao conectar ao Mongo: ', err));
-
 
 module.exports = app;
