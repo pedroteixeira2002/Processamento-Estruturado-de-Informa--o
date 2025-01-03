@@ -11,51 +11,86 @@ exports.getTransferReportByMonth = async (req, res) => {
         const transfersCollection = db.collection('transfers_new');
 
         const pipeline = [
+            // Filtra os transferências dentro do intervalo de datas
             {
                 $match: {
-                    Data_Transferencia: {$gte: startDate, $lte: endDate},
+                    Data_Transferencia: { $gte: startDate, $lte: endDate },
                 },
             },
+            // Utiliza $facet para calcular diferentes agregações em paralelo
             {
-                $group: {
-                    _id: "$Hospital_Destino",
-                    transfers: {
-                        $push: {
-                            Hospital_Destino: "$Hospital_Destino",
-                            Destino: "$Destino",
-                            ID_Paciente: "$ID_Paciente",
-                            Data_Transferencia: "$Data_Transferencia",
-                            Motivo: "$Motivo",
-                            Tipo_Transferencia: "$Tipo_Transferencia",
-                            Diagnosticos_Previos: "$Diagnosticos_Previos",
-                            Tratamentos_Previos: "$Tratamentos_Previos",
+                $facet: {
+                    // Agrupa transferências por hospital
+                    transfersByHospital: [
+                        {
+                            $group: {
+                                _id: "$Hospital_Destino",
+                                transfers: {
+                                    $push: {
+                                        Hospital_Destino: "$Hospital_Destino",
+                                        Destino: "$Destino",
+                                        ID_Paciente: "$ID_Paciente",
+                                        Data_Transferencia: "$Data_Transferencia",
+                                        Motivo: "$Motivo",
+                                        Tipo_Transferencia: "$Tipo_Transferencia",
+                                        Diagnosticos_Previos: "$Diagnosticos_Previos",
+                                        Tratamentos_Previos: "$Tratamentos_Previos",
+                                    },
+                                },
+                                totalTransfersByHospital: { $sum: 1 },
+                            },
                         },
-                    },
-                    totalTransfersByHospital: {$sum: 1},
-                    transfersByMotivo: {$push: "$Motivo"},
-                    transfersByTipo: {$push: "$Tipo_Transferencia"},
+                        { $sort: { "_id": 1 } }, // Ordena por nome do hospital
+                    ],
+                    // Conta total de transferências
+                    totalTransfers: [
+                        {
+                            $count: "totalTransfers",
+                        },
+                    ],
+                    // Conta transferências por motivo
+                    totalByMotivo: [
+                        {
+                            $group: {
+                                _id: "$Motivo",
+                                count: { $sum: 1 },
+                            },
+                        },
+                    ],
+                    // Conta transferências por tipo
+                    totalByTipo: [
+                        {
+                            $group: {
+                                _id: "$Tipo_Transferencia",
+                                count: { $sum: 1 },
+                            },
+                        },
+                    ],
                 },
             },
-            {
-                $group: {
-                    _id: null,
-                    transfersByHospital: {$push: "$$ROOT"},
-                    totalTransfers: {$sum: "$totalTransfersByHospital"},
-                    totalByMotivo: {
-                        $push: {motivo: "$transfersByMotivo", count: {$size: "$transfersByMotivo"}},
-                    },
-                    totalByTipo: {
-                        $push: {tipo: "$transfersByTipo", count: {$size: "$transfersByTipo"}},
-                    },
-                },
-            },
+            // Projeta os resultados finais
             {
                 $project: {
-                    _id: 0,
                     transfersByHospital: 1,
-                    totalTransfers: 1,
-                    totalByMotivo: 1,
-                    totalByTipo: 1,
+                    totalTransfers: { $arrayElemAt: ["$totalTransfers.totalTransfers", 0] },
+                    totalByMotivo: {
+                        $arrayToObject: {
+                            $map: {
+                                input: "$totalByMotivo",
+                                as: "motivo",
+                                in: { k: "$$motivo._id", v: "$$motivo.count" },
+                            },
+                        },
+                    },
+                    totalByTipo: {
+                        $arrayToObject: {
+                            $map: {
+                                input: "$totalByTipo",
+                                as: "tipo",
+                                in: { k: "$$tipo._id", v: "$$tipo.count" },
+                            },
+                        },
+                    },
                 },
             },
         ];
