@@ -9,13 +9,15 @@ const transferRoutes = require('./routes/TransferRoute');
 const app = express();
 
 app.use(bodyParser.json());
+app.use(express.json());
+
 
 app.get('/', (req, res) => {
     res.send('Servidor na porta 3000');
 });
 
-app.use('/api/clinical/report', clinicalRoutes);
-app.use('/api/transfers/report', transferRoutes);
+app.use('/api/clinical', clinicalRoutes);
+app.use('/api/transfers', transferRoutes);
 
 app.use((req, res, next) => {
     res.status(404).json({ success: false, message: 'Route not found' });

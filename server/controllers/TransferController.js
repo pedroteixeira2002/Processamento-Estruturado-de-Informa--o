@@ -1,7 +1,11 @@
 const connectToDb = require('../db');
 
 exports.getTransferReportByMonth = async (req, res) => {
-    const {year, month} = req.params;
+    const {year, month} = req.query;
+
+    if (!year || !month) {
+        return res.status(400).json({success: false, message: "Year and month are required."});
+    }
 
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0, 23, 59, 59);
@@ -11,16 +15,13 @@ exports.getTransferReportByMonth = async (req, res) => {
         const transfersCollection = db.collection('transfers_new');
 
         const pipeline = [
-            // Filtra os transferências dentro do intervalo de datas
             {
                 $match: {
-                    Data_Transferencia: { $gte: startDate, $lte: endDate },
+                    Data_Transferencia: {$gte: startDate, $lte: endDate},
                 },
             },
-            // Utiliza $facet para calcular diferentes agregações em paralelo
             {
                 $facet: {
-                    // Agrupa transferências por hospital
                     transfersByHospital: [
                         {
                             $group: {
@@ -37,48 +38,44 @@ exports.getTransferReportByMonth = async (req, res) => {
                                         Tratamentos_Previos: "$Tratamentos_Previos",
                                     },
                                 },
-                                totalTransfersByHospital: { $sum: 1 },
+                                totalTransfersByHospital: {$sum: 1},
                             },
                         },
-                        { $sort: { "_id": 1 } }, // Ordena por nome do hospital
+                        {$sort: {"_id": 1}},
                     ],
-                    // Conta total de transferências
                     totalTransfers: [
                         {
                             $count: "totalTransfers",
                         },
                     ],
-                    // Conta transferências por motivo
                     totalByMotivo: [
                         {
                             $group: {
                                 _id: "$Motivo",
-                                count: { $sum: 1 },
+                                count: {$sum: 1},
                             },
                         },
                     ],
-                    // Conta transferências por tipo
                     totalByTipo: [
                         {
                             $group: {
                                 _id: "$Tipo_Transferencia",
-                                count: { $sum: 1 },
+                                count: {$sum: 1},
                             },
                         },
                     ],
                 },
             },
-            // Projeta os resultados finais
             {
                 $project: {
                     transfersByHospital: 1,
-                    totalTransfers: { $arrayElemAt: ["$totalTransfers.totalTransfers", 0] },
+                    totalTransfers: {$arrayElemAt: ["$totalTransfers.totalTransfers", 0]},
                     totalByMotivo: {
                         $arrayToObject: {
                             $map: {
                                 input: "$totalByMotivo",
                                 as: "motivo",
-                                in: { k: "$$motivo._id", v: "$$motivo.count" },
+                                in: {k: "$$motivo._id", v: "$$motivo.count"},
                             },
                         },
                     },
@@ -87,7 +84,7 @@ exports.getTransferReportByMonth = async (req, res) => {
                             $map: {
                                 input: "$totalByTipo",
                                 as: "tipo",
-                                in: { k: "$$tipo._id", v: "$$tipo.count" },
+                                in: {k: "$$tipo._id", v: "$$tipo.count"},
                             },
                         },
                     },
