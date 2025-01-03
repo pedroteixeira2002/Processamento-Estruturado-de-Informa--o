@@ -13,7 +13,7 @@ exports.getTransferReportByMonth = async (req, res) => {
         const pipeline = [
             {
                 $match: {
-                    Data_Transferencia: { $gte: startDate, $lte: endDate },
+                    Data_Transferencia: {$gte: startDate, $lte: endDate},
                 },
             },
             {
@@ -31,21 +31,21 @@ exports.getTransferReportByMonth = async (req, res) => {
                             Tratamentos_Previos: "$Tratamentos_Previos",
                         },
                     },
-                    totalTransfersByHospital: { $sum: 1 },
-                    transfersByMotivo: { $push: "$Motivo" },
-                    transfersByTipo: { $push: "$Tipo_Transferencia" },
+                    totalTransfersByHospital: {$sum: 1},
+                    transfersByMotivo: {$push: "$Motivo"},
+                    transfersByTipo: {$push: "$Tipo_Transferencia"},
                 },
             },
             {
                 $group: {
                     _id: null,
-                    transfersByHospital: { $push: "$$ROOT" },
-                    totalTransfers: { $sum: "$totalTransfersByHospital" },
+                    transfersByHospital: {$push: "$$ROOT"},
+                    totalTransfers: {$sum: "$totalTransfersByHospital"},
                     totalByMotivo: {
-                        $push: { motivo: "$transfersByMotivo", count: { $size: "$transfersByMotivo" } },
+                        $push: {motivo: "$transfersByMotivo", count: {$size: "$transfersByMotivo"}},
                     },
                     totalByTipo: {
-                        $push: { tipo: "$transfersByTipo", count: { $size: "$transfersByTipo" } },
+                        $push: {tipo: "$transfersByTipo", count: {$size: "$transfersByTipo"}},
                     },
                 },
             },
@@ -59,8 +59,6 @@ exports.getTransferReportByMonth = async (req, res) => {
                 },
             },
         ];
-
-
 
         const result = await transfersCollection.aggregate(pipeline).toArray();
 

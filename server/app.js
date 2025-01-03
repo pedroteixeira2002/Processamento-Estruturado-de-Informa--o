@@ -11,7 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.send('Servidor na porta 3000!');
+    res.send('Servidor na porta 3000');
 });
 
 app.use('/api/clinical/report', clinicalRoutes);

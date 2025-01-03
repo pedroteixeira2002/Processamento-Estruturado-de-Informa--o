@@ -1,8 +1,30 @@
 const express = require('express');
-const  ClinicalReport = require('../controllers/clinicalRecordController.js');
+const ClinicalReport = require('../controllers/clinicalRecordController.js');
+const getClinicalReportByMonth = ClinicalReport.getClinicalReportByMonth;
 
 const router = express.Router();
 
-router.get('/:year/:month', ClinicalReport.getClinicalReportByMonth);
+const validateDateParams = (req, res, next) => {
+    const {year, month} = req.params;
+    const yearInt = parseInt(year, 10);
+    const monthInt = parseInt(month, 10);
+
+    if (
+        isNaN(yearInt) ||
+        isNaN(monthInt) ||
+        yearInt < 2000 || //new Date().getFullYear() > yearInt ||
+        monthInt < 1 ||
+        monthInt > 12
+    ) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid year or month. Please provide a valid year and month.',
+        });
+    }
+
+    next();
+};
+
+router.get('/:year/:month', validateDateParams, getClinicalReportByMonth);
 
 module.exports = router;
