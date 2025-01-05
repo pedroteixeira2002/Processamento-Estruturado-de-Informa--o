@@ -2,10 +2,10 @@ const connectToDb = require('../db');
 
 
 exports.getClinicalReportByMonth = async (req, res) => {
-    const {year, month} = req.query;
+    const { year, month } = req.query;
 
     if (!year || !month) {
-        return res.status(400).json({success: false, message: "Year and month are required."});
+        return res.status(400).json({ success: false, message: "Year and month are required." });
     }
 
     const yearInt = parseInt(year, 10);
@@ -15,15 +15,15 @@ exports.getClinicalReportByMonth = async (req, res) => {
         const db = await connectToDb();
         const recordsCollection = db.collection('records_by_date');
 
-        const pipeline =[
+        const pipeline = [
             { $unwind: "$Meses" },
             { $unwind: "$Meses.Registos" },
 
             // Filtra pela data do mês e ano passados como parâmetros
             {
                 $match: {
-                    "Meses.Mes": parseInt(mes),
-                    "Meses.Registos.Data_Atendimento": {yearInt}
+                    "Meses.Mes": parseInt(monthInt),
+                    "Meses.Registos.Data_Atendimento": { yearInt }
                 }
             },
 
