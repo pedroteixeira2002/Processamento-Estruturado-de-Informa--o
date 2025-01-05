@@ -19,7 +19,6 @@ exports.getClinicalReportByMonth = async (req, res) => {
             { $unwind: "$Meses" },
             { $unwind: "$Meses.Registos" },
 
-            // Filtra pela data do mês e ano passados como parâmetros
             {
                 $match: {
                     "Meses.Mes": parseInt(monthInt),

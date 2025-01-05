@@ -18,5 +18,5 @@ server.on('error', (error) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Servido na porta ${PORT}`);
+    console.log(`Servidor na porta ${PORT}`);
 });

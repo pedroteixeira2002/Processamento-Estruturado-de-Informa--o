@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 
-const uri = 'mongodb+srv://pedro:pedro@medsync.vziha.mongodb.net/?retryWrites=true&w=majority&appName=MedSync'; // Substitua pela URI do seu MongoDB
-const dbName = 'data'; // Nome do banco de dados
+const uri = 'mongodb+srv://pedro:pedro@medsync.vziha.mongodb.net/?retryWrites=true&w=majority&appName=MedSync';
+const dbName = 'data';
 let db;
 
 async function connectToDb() {
