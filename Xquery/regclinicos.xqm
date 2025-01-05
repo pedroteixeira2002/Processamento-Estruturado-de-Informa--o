@@ -46,19 +46,29 @@ declare
             },
             element Estatisticas {
                 element FaixaEtaria {
-                    for $faixa in $json/estatisticas/faixaEtaria
-                    return element Faixa {
-                        element FaixaEtaria { $faixa/faixaEtaria },
-                        element TotalPacientes { $faixa/totalPacientes }
-                    }
-                },
+                        element Faixa {
+                        element FaixaEtaria { "0-18" },
+                        element TotalPacientes { $json/estatisticas/faixaEtaria/`0-18` }
+                         },
+                        element Faixa {
+                        element FaixaEtaria { "19-65" },
+                        element TotalPacientes { $json/estatisticas/faixaEtaria/`19-65` }
+                        },
+                        element Faixa {
+                        element FaixaEtaria { "65+" },
+                        element TotalPacientes { $json/estatisticas/faixaEtaria/`65+` }
+                        }
+                        },
                 element PorGenero {
-                    for $genero in $json/estatisticas/porGenero
-                    return element Genero {
-                        element Genero { $genero/genero },
-                        element TotalPacientes { $genero/totalPacientes }
-                    }
-                },
+                        element Genero {
+                        element Genero { "M" },
+                        element TotalPacientes { $json/estatisticas/porGenero/M }
+                        },
+                        element Genero {
+                        element Genero { "F" },
+                        element TotalPacientes { $json/estatisticas/porGenero/F }
+                        }
+                        },
                 element PorCronicas {
                     for $condicao in $json/estatisticas/porCronicas
                     return element Cronica {
