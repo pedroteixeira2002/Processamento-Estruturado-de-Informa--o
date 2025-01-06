@@ -42,12 +42,12 @@ declare
             element Pacientes {
                 for $paciente in $json/data/_/Pacientes/_ 
                 return element Paciente {
-                    element ID_Paciente { $paciente/ID__Paciente },
-                    element Nome_Completo { $paciente/Nome_Completo },
-                    element Data_Nascimento { $paciente/Data_Nascimento },
-                    element Género { $paciente/Género },
-                    element Email { $paciente/Email },
-                    element Data_Registo { $paciente/Data_Registo }
+                    element ID__Paciente { $paciente/ID__Paciente },
+                    element Nome__Completo { $paciente/Nome__Completo/text() },
+                    element Data__Nascimento { $paciente/Data__Nascimento/text() },
+                    element Genero { $paciente/Género/text() },
+                    element Email { $paciente/Email/text() },
+                    element Data_Registo { $paciente/Data__Registo/text() }
                 }
             },
             element Estatisticas {
@@ -78,9 +78,8 @@ declare
                 element TotalTratamentos { $json/data/_/estatisticas/totalTratamentos }
             }
         }
-
               return (
         file:write(concat("clinicalReport_", $year, "_", $month, ".xml"), $xml),
-        $xml
+        $xml 
       ) 
     };
