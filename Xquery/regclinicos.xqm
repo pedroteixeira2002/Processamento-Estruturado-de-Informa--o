@@ -1,42 +1,48 @@
 module namespace page = 'http://basex.org/examples/web-page';
 
 declare
-    %rest:path("getRegistosClinico/2023/10")   
-    %rest:GET 
+    %rest:path("getRegistosClinico/{$year}/{$month}")       
+    function page:getTransferReport($year as xs:string?, $month as xs:string?) {
+        let $default-year := "2024"
+        let $default-month := "10"
+        let $actual-year := if ($year) then $year else $default-year
+        let $actual-month := if ($month) then $month else $default-month
+        let $url := concat("http://localhost:3000/api/clinical/report?year=", $actual-year, "&amp;month=", $actual-month)
+        let $response := http:send-request(
+            <http:request method="GET" href="{$url}"/>
+        )
+      let $json := $response//json[1]
 
-    function page:getRegistosClinico() {   
-        let $json := http:send-request(
-            <http:request method="GET" href="http://localhost:3000/api/transfers/report/2023/10"/>
-        )[2]/json/_
+
 
         let $xml := element RegistosClinicos {
-            for $registro in $json/Registos
+            for $registro in $json/data/_/Registos/_ 
             return element RegistoClinico {
-                element ID_Registo_Clinico { $registro/ID_Registo_Clinico },
-                element ID_Paciente { $registro/ID_Paciente },
-                element ID_Profissional { $registro/ID_Profissional },
-                element Data_Atendimento { $registro/Data_Atendimento },
+                element ID_Registo_Clinico { $registro/ID__Registo__Clinico },
+                element ID_Paciente { $registro/ID__Paciente },
+                element ID_Profissional { $registro/ID__Profissional },
+                element Data_Atendimento { $registro/Data__Atendimento },
                 element Diagnosticos {
-                    for $diagnostico in $registro/Diagnosticos
+                    for $diagnostico in $registro/Diagnosticos/_ 
                     return element Diagnostico {
-                        element Tipo_Diagnostico { $diagnostico/Tipo_Diagnostico },
-                        element Codigo_CID10 { $diagnostico/Codigo_CID10 },
-                        element Descricao_Diagnostico { $diagnostico/Descricao_Diagnostico }
+                        element Tipo_Diagnostico { $diagnostico/Tipo__Diagnostico },
+                        element Codigo_CID10 { $diagnostico/Codigo__CID10 },
+                        element Descricao_Diagnostico { $diagnostico/Descricao__Diagnostico }
                     }
                 },
                 element Tratamentos {
-                    for $tratamento in $registro/Tratamentos
+                    for $tratamento in $registro/Tratamentos/_ 
                     return element Tratamento {
-                        element ID_Tratamento { $tratamento/ID_Tratamento },
-                        element Tipo_Tratamento { $tratamento/Tipo_Tratamento },
+                        element ID_Tratamento { $tratamento/ID__Tratamento },
+                        element Tipo_Tratamento { $tratamento/Tipo__Tratamento },
                         element Realizado { $tratamento/Realizado }
                     }
                 }
             },
             element Pacientes {
-                for $paciente in $json/Pacientes
+                for $paciente in $json/data/_/Pacientes/_ 
                 return element Paciente {
-                    element ID_Paciente { $paciente/ID_Paciente },
+                    element ID_Paciente { $paciente/ID__Paciente },
                     element Nome_Completo { $paciente/Nome_Completo },
                     element Data_Nascimento { $paciente/Data_Nascimento },
                     element Género { $paciente/Género },
@@ -46,42 +52,35 @@ declare
             },
             element Estatisticas {
                 element FaixaEtaria {
-                        element Faixa {
+                    element Faixa {
                         element FaixaEtaria { "0-18" },
-                        element TotalPacientes { $json/estatisticas/faixaEtaria/`0-18` }
-                         },
-                        element Faixa {
+                        element TotalPacientes { $json/data/_/estatisticas/faixaEtaria/`0-18` }
+                    },
+                    element Faixa {
                         element FaixaEtaria { "19-65" },
-                        element TotalPacientes { $json/estatisticas/faixaEtaria/`19-65` }
-                        },
-                        element Faixa {
+                        element TotalPacientes { $json/data/_/estatisticas/faixaEtaria/`19-65` }
+                    },
+                    element Faixa {
                         element FaixaEtaria { "65+" },
-                        element TotalPacientes { $json/estatisticas/faixaEtaria/`65+` }
-                        }
-                        },
-                element PorGenero {
-                        element Genero {
-                        element Genero { "M" },
-                        element TotalPacientes { $json/estatisticas/porGenero/M }
-                        },
-                        element Genero {
-                        element Genero { "F" },
-                        element TotalPacientes { $json/estatisticas/porGenero/F }
-                        }
-                        },
-                element PorCronicas {
-                    for $condicao in $json/estatisticas/porCronicas
-                    return element Cronica {
-                        element Condicao { $condicao/condicao },
-                        element TotalPacientes { $condicao/totalPacientes }
+                        element TotalPacientes { $json/data/_/estatisticas/faixaEtaria/`65+` }
                     }
                 },
-                element TotalTratamentos { $json/estatisticas/totalTratamentos }
+                element PorGenero {
+                    element Genero {
+                        element Genero { "M" },
+                        element TotalPacientes { $json/data/_/estatisticas/porGenero/M }
+                    },
+                    element Genero {
+                        element Genero { "F" },
+                        element TotalPacientes { $json/data/_/estatisticas/porGenero/F }
+                    }
+                },
+                element TotalTratamentos { $json/data/_/estatisticas/totalTratamentos }
             }
         }
 
-        return (
-            file:write("registosClinicos.xml", $xml),
-            $xml
-        )
+              return (
+        file:write(concat("clinicalReport_", $year, "_", $month, ".xml"), $xml),
+        $xml
+      ) 
     };
