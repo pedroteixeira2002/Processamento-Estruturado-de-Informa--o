@@ -1,48 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:p="https://www.registoclinico.pt/paciente">
-  
-  <xs:import schemaLocation="pacient_type.xsd" namespace="https://www.registoclinico.pt/paciente"/>
-  
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
   <xs:element name="RegistosClinicos">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="RegistoClinico" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="CodigoAtendimento" type="identificationTipo"/>
-              <xs:element name="idPaciente" type="p:codPacienteType"/>
-              <xs:element name="idProfissional" type="identificationTipo"/>
-              <xs:element name="dataAtendimento" type="xs:date"/>
-              <xs:element name="Diagnosticos" type="diagonosticoTipo"/>
-              <xs:element name="descDiagonostico" type="descDiagonosticoTipo"/>
+              <xs:element name="ID_Registo_Clinico" type="xs:string"/>
+              <xs:element name="ID_Paciente" type="xs:string"/>
+              <xs:element name="ID_Profissional" type="xs:string"/>
+              <xs:element name="Data_Atendimento" type="xs:date"/>
+              <xs:element name="Diagnosticos">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Diagnostico" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Tipo_Diagnostico" type="xs:string"/>
+                          <xs:element name="Codigo_CID10" type="xs:string"/>
+                          <xs:element name="Descricao_Diagnostico" type="xs:string"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Tratamentos">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Tratamento" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ID_Tratamento" type="xs:string"/>
+                          <xs:element name="Tipo_Tratamento" type="xs:string"/>
+                          <xs:element name="Realizado" type="xs:boolean"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="Pacientes">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Paciente" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ID__Paciente" type="xs:string"/>
+                    <xs:element name="Nome__Completo" type="xs:string"/>
+                    <xs:element name="Data__Nascimento" type="xs:date"/>
+                    <xs:element name="Genero" type="xs:string"/>
+                    <xs:element name="Email" type="xs:string"/>
+                    <xs:element name="Data_Registo" type="xs:date"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="Estatisticas">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="FaixaEtaria">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Faixa" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="FaixaEtaria" type="xs:string"/>
+                          <xs:element name="TotalPacientes" type="xs:integer"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="PorGenero">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Genero" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Genero" type="xs:string"/>
+                          <xs:element name="TotalPacientes" type="xs:integer"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="TotalTratamentos" type="xs:integer"/>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
-  <xs:simpleType name="identificationTipo">
-    <xs:restriction base="xs:integer">
-      <xs:minInclusive value="1"/>
-      <xs:maxInclusive value="50000"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  <xs:simpleType name="diagonosticoTipo">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="DiagnosticoPrincipal"/>
-      <xs:enumeration value="DiagnosticoSecundario"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  <xs:simpleType name="descDiagonosticoTipo">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[a-zA-Z]+"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  
-  
+
 </xs:schema>

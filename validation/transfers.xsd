@@ -1,68 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:p="https://www.registoclinico.pt/paciente"
-  xmlns:m="https://www.registoclinico.pt/profissional"
-  xmlns:h="https://www.registoclinico.pt/hospital">
-  
-  <xs:import schemaLocation="profissional_type.xsd" namespace="https://www.registoclinico.pt/profissional"/>  
-  <xs:import schemaLocation="pacient_type.xsd" namespace="https://www.registoclinico.pt/paciente"/>  
-  <xs:import schemaLocation="hospital_type.xsd" namespace="https://www.registoclinico.pt/hospital"/>
-  
-  
-  
-  <xs:element name="Transferencias">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+  <xs:element name="transferReport">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="Transferencia" maxOccurs="unbounded">
+        <xs:element name="totalTransferencias" type="xs:integer"/>
+        <xs:element name="transferencias">
           <xs:complexType>
             <xs:sequence>
-              
-              <xs:element name="infoGeralHospital">
+              <xs:element name="transferencia" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="codHospDest" type="h:codHospTipo"/> 
-                    <xs:element name="nomeHospDest" type="xs:string"/>
-                    <xs:element name="moradaHospDest" type="xs:string"/>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-              
-              <xs:element name="registoTransferencia">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="CodigoPaciente" type="p:codPacienteType"/>
-                    <xs:element name="DataTransferencia" type="xs:date"/>
-                    <xs:element name="motivoTransferencia" type="xs:string"/>
-                    <xs:element name="tipoTransferencia" type="tipoTransferenciaTipo"/>
-                    
-                    <xs:element name="RelatorioMedico">
+                    <xs:element name="Destino" type="xs:string"/>
+                    <xs:element name="Hospital_Destino" type="xs:string"/>
+                    <xs:element name="ID_Paciente" type="xs:string"/>
+                    <xs:element name="Data_Transferencia" type="xs:date"/>
+                    <xs:element name="Motivo" type="xs:string"/>
+                    <xs:element name="Tipo_Transferencia" type="xs:string"/>
+                    <xs:element name="Diagnosticos_Previos">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="idMedico" type="m:idProfissionalTipo"/>
-                          <xs:element name="diagnosticosPrevios" type="xs:string" maxOccurs="unbounded"/>
-                          <xs:element name="tratamentosPrevios" type="xs:string" maxOccurs="unbounded"/>
+                          <xs:element name="diagnostico" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="Tipo_Diagnostico" type="xs:string"/>
+                                <xs:element name="Codigo_CID10" type="xs:string"/>
+                                <xs:element name="Descricao_Diagnostico" type="xs:string"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Tratamentos_Previos">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="tratamento" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="Tipo_Diagnostico" type="xs:string"/>
+                                <xs:element name="Codigo_CID10" type="xs:string"/>
+                                <xs:element name="Descricao_Diagnostico" type="xs:string"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element name="Motivo" type="xs:string"/>
-              <xs:element name="RelatorioMedico" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="porMotivo">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="motivo" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="descricao" type="xs:string"/>
+                    <xs:element name="total" type="xs:integer"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="porTipo">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="tipo" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="descricao" type="xs:string"/>
+                    <xs:element name="total" type="xs:integer"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
-  
-  <xs:simpleType name="tipoTransferenciaTipo">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Urgente"/>
-      <xs:enumeration value="Eletiva"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  
+
 </xs:schema>

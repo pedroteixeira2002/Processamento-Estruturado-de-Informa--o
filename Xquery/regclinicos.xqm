@@ -44,10 +44,10 @@ declare
                 return element Paciente {
                     element ID__Paciente { $paciente/ID__Paciente },
                     element Nome__Completo { $paciente/Nome__Completo/text() },
-                    element Data__Nascimento { $paciente/Data__Nascimento/text() },
+                    element Data__Nascimento { $paciente/Data__Nascimento },
                     element Genero { $paciente/Género/text() },
                     element Email { $paciente/Email/text() },
-                    element Data_Registo { $paciente/Data__Registo/text() }
+                    element Data_Registo { $paciente/Data__Registo }
                 }
             },
             element Estatisticas {
