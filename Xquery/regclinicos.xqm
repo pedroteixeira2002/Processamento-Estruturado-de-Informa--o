@@ -54,15 +54,15 @@ declare
                 element FaixaEtaria {
                     element Faixa {
                         element FaixaEtaria { "0-18" },
-                        element TotalPacientes { $json/data/_/estatisticas/faixaEtaria/`0-18` }
+                        element TotalPacientes { $json/data/_/estatisticas/faixaEtaria/_0030-18 }
                     },
                     element Faixa {
                         element FaixaEtaria { "19-65" },
-                        element TotalPacientes { $json/data/_/estatisticas/faixaEtaria/`19-65` }
+                        element TotalPacientes { $json/data/_/estatisticas/faixaEtaria/_00319-65 }
                     },
                     element Faixa {
                         element FaixaEtaria { "65+" },
-                        element TotalPacientes { $json/data/_/estatisticas/faixaEtaria/`65+` }
+                        element TotalPacientes { $json/data/_/estatisticas/faixaEtaria/_00365_002b}
                     }
                 },
                 element PorGenero {
@@ -78,8 +78,9 @@ declare
                 element TotalTratamentos { $json/data/_/estatisticas/totalTratamentos }
             }
         }
-              return (
+        return $xml
+           (:   return (
         file:write(concat("clinicalReport_", $year, "_", $month, ".xml"), $xml),
         $xml 
-      ) 
+      ) :)
     };
