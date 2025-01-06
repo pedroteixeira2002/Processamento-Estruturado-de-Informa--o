@@ -1,5 +1,5 @@
 
-*.json
+.json
 server/package.json
 server/package-lock.json
 server/package-lock.json
