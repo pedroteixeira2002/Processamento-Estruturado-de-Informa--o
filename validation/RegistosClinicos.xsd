@@ -34,7 +34,7 @@
                         <xs:sequence>
                           <xs:element name="ID_Tratamento" type="xs:string"/>
                           <xs:element name="Tipo_Tratamento" type="xs:string"/>
-                          <xs:element name="Realizado" type="xs:boolean"/>
+                          <xs:element name="Realizado" type="xs:string"/>
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>

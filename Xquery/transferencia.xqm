@@ -11,54 +11,57 @@ declare
         let $response := http:send-request(
             <http:request method="GET" href="{$url}"/>
         )
-      let $json := $response//json[1]
-      let $xml := 
-        element transferReport {
-          element totalTransferencias { $json/data/_/totalTransferencias/text() },
-          element transferencias {
-            for $transfer in $json/data/_/transferencias/_
-            return element transferencia {
-              element Destino { $transfer/Destino/text() },
-              element Hospital_Destino { $transfer/Hospital__Destino/text() },
-              element ID_Paciente { $transfer/ID__Paciente/text() },
-              element Data_Transferencia { $transfer/Data__Transferencia/text() },
-              element Motivo { $transfer/Motivo/text() },
-              element Tipo_Transferencia { $transfer/Tipo__Transferencia/text() },
-              element Diagnosticos_Previos {
-                for $diagnostico in $transfer/Diagnosticos__Previos/_
-                return element diagnostico {
-                  element Tipo_Diagnostico { $diagnostico/Tipo__Diagnostico/text() },
-                  element Codigo_CID10 { $diagnostico/Codigo__CID10/text() },
-                  element Descricao_Diagnostico { $diagnostico/Descricao__Diagnostico/text() }
+        let $json := $response//json[1]
+        let $xml := 
+            element transferReport {
+                element totalTransferencias { $json/data/_/totalTransferencias/text() },
+                element transferencias {
+                    for $transfer in $json/data/_/transferencias/_
+                    return element transferencia {
+                        element Destino { $transfer/Destino/text() },
+                        element Hospital_Destino { $transfer/Hospital__Destino/text() },
+                        element ID_Paciente { $transfer/ID__Paciente/text() },
+                        element Data_Transferencia { 
+                            substring-before($transfer/Data__Transferencia/text(), "T") 
+                        },
+                        element Motivo { $transfer/Motivo/text() },
+                        element Tipo_Transferencia { $transfer/Tipo__Transferencia/text() },
+                        element Diagnosticos_Previos {
+                            for $diagnostico in $transfer/Diagnosticos__Previos/_
+                            return element diagnostico {
+                                element Tipo_Diagnostico { $diagnostico/Tipo__Diagnostico/text() },
+                                element Codigo_CID10 { $diagnostico/Codigo__CID10/text() },
+                                element Descricao_Diagnostico { $diagnostico/Descricao__Diagnostico/text() }
+                            }
+                        },
+                        element Tratamentos_Previos {
+                            for $tratamento in $transfer/Tratamentos__Previos/_
+                            return element tratamento {
+                                element Tipo_Diagnostico { $tratamento/ID__Tratamento/text() },
+                                element Codigo_CID10 { $tratamento/Tipo__Tratamento/text() },
+                                element Descricao_Diagnostico { $tratamento/Realizado/text() }
+                            }
+                        }
+                    }
+                },
+                element porMotivo {
+                    for $motivo in $json/data/_/porMotivo/_
+                    return element motivo {
+                        element descricao { $motivo/motivo/text() },
+                        element total { $motivo/totalPorMotivo/text() }
+                    }
+                },
+                element porTipo {
+                    for $tipo in $json/data/_/porTipo/_
+                    return element tipo {
+                        element descricao { $tipo/tipo/text() },
+                        element total { $tipo/totalPorTipo/text() }
+                    }
                 }
-              },
-              element Tratamentos_Previos {
-                for $tratamento in $transfer/Tratamentos__Previos/_
-                return element tratamento {
-                  element Tipo_Diagnostico { $tratamento/ID__Tratamento/text() },
-                  element Codigo_CID10 { $tratamento/Tipo__Tratamento/text() },
-                  element Descricao_Diagnostico { $tratamento/Realizado/text() }
-                }
-              }
             }
-          },
-          element porMotivo {
-            for $motivo in $json/data/_/porMotivo/_
-            return element motivo {
-              element descricao { $motivo/motivo/text() },
-              element total { $motivo/totalPorMotivo/text() }
-            }
-          },
-          element porTipo {
-            for $tipo in $json/data/_/porTipo/_
-            return element tipo {
-              element descricao { $tipo/tipo/text() },
-              element total { $tipo/totalPorTipo/text() }
-            }
-          }
-        }
-      return (
-        file:write(concat("transferReport_", $year, "_", $month, ".xml"), $xml),
-        $xml
-      ) 
+        let $validated-xml := validate:xsd($xml, "transferReport.xsd")
+        return (
+            file:write(concat("transferReport_", $actual-year, "_", $actual-month, ".xml"), $validated-xml),
+            $validated-xml
+        )
     };
