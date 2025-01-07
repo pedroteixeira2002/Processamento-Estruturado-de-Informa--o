@@ -61,7 +61,7 @@ declare
             }
         let $validated-xml := validate:xsd($xml, "transferReport.xsd")
         return (
-            file:write(concat("transferReport_", $actual-year, "_", $actual-month, ".xml"), $validated-xml),
-            $validated-xml
+            file:write(concat("transferReport_", $actual-year, "_", $actual-month, ".xml"), $xml),
+            $xml
         )
     };
